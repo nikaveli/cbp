@@ -17,7 +17,7 @@ function About() {
           <div className="about-hero__copy">
             <p className="page-kicker">Adam Gutierrez</p>
             <h1>Field experience, carried into every decision.</h1>
-            <p>Adam is a Denver native with more than 25 years in the masonry trade. He founded Colorado Block Pros to give project teams direct access to practical masonry leadership.</p>
+            <p>Adam Gutierrez is a Denver native with more than 25 years in the masonry trade. He founded Colorado Block Pros to give project teams direct access to practical masonry leadership.</p>
           </div>
         </section>
         <section className="about-story" data-cbp-motion="reveal">

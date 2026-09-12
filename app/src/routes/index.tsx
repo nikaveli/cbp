@@ -101,8 +101,7 @@ function Index() {
           <div className="adam-profile__copy">
             <p className="page-kicker">Field-first leadership</p>
             <h2>Twenty-five-plus years in the trade.</h2>
-            <p>Adam is a Denver native who built Colorado Block Pros around direct accountability, capable field leadership, and an understanding of what the general contractor needs from a masonry subcontractor.</p>
-            <Link to="/about" className="meet-adam-link"><span>Meet Adam</span><i aria-hidden="true" /></Link>
+            <p>Adam Gutierrez is a Denver native who built Colorado Block Pros around direct accountability, capable field leadership, and an understanding of what the general contractor needs from a masonry subcontractor.</p>
           </div>
         </section>
 
