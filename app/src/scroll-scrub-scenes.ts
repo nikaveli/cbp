@@ -25,7 +25,7 @@ export const scrollScrubScenes: ScrollScrubScene[] = [
     title: "Built for the work behind the wall.",
     actions: createElement(
       "a",
-      { className: "hero-bid-link", href: "/contact" },
+      { className: "hero-bid-link", href: `${import.meta.env.BASE_URL}contact` },
       createElement("span", null, "Start a bid"),
       createElement("i", { "aria-hidden": true }),
     ),

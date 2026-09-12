@@ -80,7 +80,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       <p>Refresh the page or return to the homepage.</p>
       <div>
         <button onClick={() => { router.invalidate(); reset(); }}>Try again</button>
-        <a href="/">Return home</a>
+        <a href={import.meta.env.BASE_URL}>Return home</a>
       </div>
     </main>
   );
