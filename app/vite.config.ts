@@ -9,6 +9,26 @@ import svgr from "vite-plugin-svgr";
 import { defaultServerConditions, defineConfig } from "vite";
 import { fileURLToPath } from "node:url";
 
+const GITHUB_PAGES_BASE = "/cbp/";
+
+function githubPagesPublicPaths(enabled: boolean) {
+  return {
+    name: "github-pages-public-paths",
+    enforce: "pre" as const,
+    transform(code: string, id: string) {
+      if (!enabled || !id.includes("/src/")) return null;
+
+      return code
+        .replaceAll('"/assets/', `"${GITHUB_PAGES_BASE}assets/`)
+        .replaceAll("'/assets/", `'${GITHUB_PAGES_BASE}assets/`)
+        .replaceAll("`/assets/", `\`${GITHUB_PAGES_BASE}assets/`)
+        .replaceAll('"/favicon-', `"${GITHUB_PAGES_BASE}favicon-`)
+        .replaceAll('"/apple-touch-icon', `"${GITHUB_PAGES_BASE}apple-touch-icon`)
+        .replaceAll('"/site.webmanifest', `"${GITHUB_PAGES_BASE}site.webmanifest`);
+    },
+  };
+}
+
 // The vendored @higgsfield/quanta components import their glyphs from the private
 // Nexus-only `@higgsfield-ai/icons`. Generated sites build on the PUBLIC npm
 // registry, so we redirect every `@higgsfield-ai/icons/*` import to a lucide
@@ -20,8 +40,10 @@ const QUANTA_ICONS_SHIM = fileURLToPath(
 
 export default defineConfig(({ command, mode }) => {
   const designInspectorEnabled = process.env.HF_DESIGN_INSPECTOR === "1" || mode === "design";
+  const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
   return {
+    base: isGitHubPages ? GITHUB_PAGES_BASE : "/",
     // fsevents can miss edits under some setups (bun-launched dev, synced/virtual
     // dirs), leaving HMR dead so changes only appear after a manual restart.
     // Polling the watcher makes file changes reliably trigger HMR / SSR reload.
@@ -72,6 +94,7 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: { external: [/^cloudflare:/] },
     },
     plugins: [
+      githubPagesPublicPaths(isGitHubPages),
       // Local SVG assets (e.g. the branded generate-button sparkle) import as
       // React components via `?react`. `icon: true` sizes them 1em; fill is
       // forced to currentColor so they color like text. Keep the viewBox so
@@ -99,6 +122,17 @@ export default defineConfig(({ command, mode }) => {
       // inside effects/handlers, or guarded with `typeof window !== "undefined"`.
       tanstackStart({
         server: { entry: "server" },
+        ...(isGitHubPages
+          ? {
+              prerender: {
+                enabled: true,
+                autoSubfolderIndex: true,
+                autoStaticPathsDiscovery: true,
+                crawlLinks: true,
+                failOnError: true,
+              },
+            }
+          : {}),
       }),
       higgsfieldDesignInspectorVitePlugin(designInspectorEnabled),
       react({
