@@ -11,7 +11,8 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     ...(basepath ? { basepath } : {}),
-    scrollRestoration: true,
+    scrollRestoration: ({ location }) =>
+      location.pathname.startsWith("/app"),
     defaultPreloadStaleTime: 0,
   });
 

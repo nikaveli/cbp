@@ -37,6 +37,11 @@ export function SiteScrollcraft() {
         const gsap = gsapModule.gsap;
         const ScrollTrigger = scrollTriggerModule.ScrollTrigger;
         gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.config({ ignoreMobileResize: true });
+
+        const supportsHover = window.matchMedia(
+          "(hover: hover) and (pointer: fine)",
+        ).matches;
 
         const markers = Array.from(
           trace.querySelectorAll<HTMLElement>(".bond-trace__block"),
@@ -353,31 +358,33 @@ export function SiteScrollcraft() {
                 },
               );
 
-              const move = (event: PointerEvent) => {
-                const rect = section.getBoundingClientRect();
-                gsap.to(section, {
-                  "--cbp-mx": clamp((event.clientX - rect.left) / rect.width),
-                  "--cbp-my": clamp((event.clientY - rect.top) / rect.height),
-                  duration: 0.55,
-                  ease: "power3.out",
-                  overwrite: "auto",
+              if (supportsHover) {
+                const move = (event: PointerEvent) => {
+                  const rect = section.getBoundingClientRect();
+                  gsap.to(section, {
+                    "--cbp-mx": clamp((event.clientX - rect.left) / rect.width),
+                    "--cbp-my": clamp((event.clientY - rect.top) / rect.height),
+                    duration: 0.55,
+                    ease: "power3.out",
+                    overwrite: "auto",
+                  });
+                };
+                const leave = () => {
+                  gsap.to(section, {
+                    "--cbp-mx": 0.5,
+                    "--cbp-my": 0.5,
+                    duration: 0.7,
+                    ease: "power3.out",
+                    overwrite: "auto",
+                  });
+                };
+                section.addEventListener("pointermove", move, { passive: true });
+                section.addEventListener("pointerleave", leave);
+                pointerCleanups.push(() => {
+                  section.removeEventListener("pointermove", move);
+                  section.removeEventListener("pointerleave", leave);
                 });
-              };
-              const leave = () => {
-                gsap.to(section, {
-                  "--cbp-mx": 0.5,
-                  "--cbp-my": 0.5,
-                  duration: 0.7,
-                  ease: "power3.out",
-                  overwrite: "auto",
-                });
-              };
-              section.addEventListener("pointermove", move, { passive: true });
-              section.addEventListener("pointerleave", leave);
-              pointerCleanups.push(() => {
-                section.removeEventListener("pointermove", move);
-                section.removeEventListener("pointerleave", leave);
-              });
+              }
             }
 
             if (motion === "resolve") {
@@ -420,7 +427,7 @@ export function SiteScrollcraft() {
               }
 
               const target = section.querySelector<HTMLElement>("a, button");
-              if (target) {
+              if (target && supportsHover) {
                 const move = (event: PointerEvent) => {
                   const rect = target.getBoundingClientRect();
                   const x = clamp((event.clientX - rect.left) / rect.width) - 0.5;

@@ -96,6 +96,8 @@ type ThemeStyle = CSSProperties & Record<`--ss-${string}`, string | number>;
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
 
+const MOBILE_SCROLL_SCALE = 1.25;
+
 const smoothstep = (value: number) => {
   const x = clamp(value);
   return x * x * (3 - 2 * x);
@@ -650,8 +652,10 @@ export function ScrollScrub({
 
       <div className="scroll-scrub__story">
         {segments.map((segment) => {
-          const bandStyle: CSSProperties = {
-            minHeight: `${Math.max(segment.weight, 0.2) * 100}dvh`,
+          const weight = Math.max(segment.weight, 0.2);
+          const bandStyle: ThemeStyle = {
+            "--ss-mobile-band-height": `${weight * 100 * MOBILE_SCROLL_SCALE}svh`,
+            minHeight: `${weight * 100}dvh`,
           };
 
           if (segment.kind === "connector") {

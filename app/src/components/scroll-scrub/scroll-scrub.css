@@ -220,6 +220,23 @@
 }
 
 @media (max-width: 860px) {
+  .scroll-scrub__stage {
+    height: 100svh;
+  }
+
+  .scroll-scrub__story {
+    margin-top: -100svh;
+  }
+
+  .scroll-scrub__chapter,
+  .scroll-scrub__connector-band {
+    min-height: var(--ss-mobile-band-height, 125svh) !important;
+  }
+
+  .scroll-scrub__chapter-pin {
+    min-height: 100svh;
+  }
+
   .scroll-scrub__poster,
   .scroll-scrub__video {
     object-position: var(--ss-mobile-position);
@@ -269,7 +286,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .scroll-scrub__chapter {
-    min-height: 100dvh !important;
+    min-height: 100svh !important;
   }
 
   .scroll-scrub__connector-band {
